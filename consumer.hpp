@@ -36,26 +36,35 @@ Consumer::Consumer(TSQueue<Item*>* worker_queue, TSQueue<Item*>* output_queue, T
 	is_cancel = false;
 }
 
-Consumer::~Consumer() {}
+Consumer::~Consumer() {
+	pthread_cancel(t);
+}
 
 void Consumer::start() {
 	// TODO: starts a Consumer thread
+	pthread_create(&t, 0, Consumer::process, (void*)this);
 }
 
 int Consumer::cancel() {
 	// TODO: cancels the consumer thread
+	is_cancel = true;
+	return 0;
 }
 
 void* Consumer::process(void* arg) {
 	Consumer* consumer = (Consumer*)arg;
-
 	pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED, nullptr);
-
 	while (!consumer->is_cancel) {
 		pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, nullptr);
-
 		// TODO: implements the Consumer's work
-
+		// Take an Item from the Worker Queue.
+		Item* item = consumer->worker_queue->dequeue();
+		if (item) {
+			// Use Transformer::consumer_transform to perform transform on the Item’s value.
+			item->val = consumer->transformer->consumer_transform(item->opcode, item->val);
+			// Put the Item with new value into the Output Queue.
+			consumer->output_queue->enqueue(item);
+		}
 		pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, nullptr);
 	}
 

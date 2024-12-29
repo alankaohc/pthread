@@ -40,10 +40,24 @@ Writer::~Writer() {
 
 void Writer::start() {
 	// TODO: starts a Writer thread
+	pthread_create(&t, 0, Writer::process, (void*)this);
 }
 
 void* Writer::process(void* arg) {
 	// TODO: implements the Writer's work
+	Writer* writer = (Writer*)arg;
+
+	while (writer->expected_lines--) {
+		
+		Item *item = writer->output_queue->dequeue();
+		//std::cout << writer->output_queue->get_size() << std::endl;
+		//std::cout << item->key << std::endl;
+		writer->ofs << *item;
+		delete item;
+	}
+
+	return nullptr;
+
 }
 
 #endif // WRITER_HPP

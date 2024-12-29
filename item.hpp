@@ -3,6 +3,8 @@
 #ifndef ITEM_HPP
 #define ITEM_HPP
 
+bool exitflag = false; 
+
 class Item {
 public:
 	Item();

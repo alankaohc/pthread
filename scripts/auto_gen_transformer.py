@@ -63,7 +63,7 @@ unsigned long long Transformer::transform(TransformSpec* spec, unsigned long lon
 	return template
 
 @click.command()
-@click.option('--input', default='./tests/00_spec.json', help='Input json file path.')
+@click.option('--input', default='./tests/01_spec.json', help='Input json file path.')
 @click.option('--output', default='./transformer.cpp', help='Output .cpp file path.')
 def generate(input, output):
 	spec = {}

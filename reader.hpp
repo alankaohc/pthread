@@ -2,6 +2,7 @@
 #include "thread.hpp"
 #include "ts_queue.hpp"
 #include "item.hpp"
+#include <iostream>
 
 #ifndef READER_HPP
 #define READER_HPP
@@ -15,6 +16,7 @@ public:
 	~Reader();
 
 	virtual void start() override;
+
 private:
 	// the expected lines to read,
 	// the reader thread finished after input expected lines of item
@@ -36,6 +38,7 @@ Reader::Reader(int expected_lines, std::string input_file, TSQueue<Item*>* input
 
 Reader::~Reader() {
 	ifs.close();
+	//std::cout << "~Reader()" << std::endl;
 }
 
 void Reader::start() {
@@ -50,8 +53,10 @@ void* Reader::process(void* arg) {
 		reader->ifs >> *item;
 		reader->input_queue->enqueue(item);
 	}
-
+	
 	return nullptr;
 }
+
+
 
 #endif // READER_HPP
